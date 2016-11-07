@@ -29,7 +29,12 @@
   },
   "dependencies": {
     "babel-cli": "^6.18.0",
-    "babel-runtime": "^6.11.6"
+    "babel-runtime": "^6.11.6",
+    "bluebird": "^3.4.6",
+    "es6-promise": "^4.0.5",
+    "express": "^4.14.0",
+    "isomorphic-fetch": "^2.2.1",
+    "lodash": "^4.16.6"
   },
   "devDependencies": {
     "babel-cli": "^6.16.0",
@@ -62,6 +67,8 @@
     "prepublish": "npm run build",
     "publish:docs": "easystatic deploy docs --repo kriasoft/babel-starter-kit",
     "dev": "nodemon --exec babel-node -- src/index.js",
+    "testmy": "babel-node -- test/canonizeUrlTest.js",
+    "testmy1": "babel-node -- test/GreetingSpec.js",
     "start": "easystatic start docs"
   }
 }
