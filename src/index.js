@@ -74,6 +74,13 @@ app.get('/clear', isAdmin, async (req, res) => {
 // }
 
 // ---------------------------------------------------------------------------//
+// Lesson 2. Hello JS World. Task 2C: `telegram.me/skillbranch` -> username `skillbranch`
+app.get('/task2C', (req, res) => {
+  const userName = canonize(req.query.username);
+  res.send(userName);
+});
+
+// ---------------------------------------------------------------------------//
 // Lesson 2. Hello JS World. Task 2B: Surname Name Patronym -> Surname N. P.
 app.get('/task2B', (req, res) => {
   const fullName = String.trim(req.query.fullname || '').replace(/\s+/g, ' ');
