@@ -1,8 +1,5 @@
 import express from 'express';
-import Promise from 'bluebird';
-import bodyParser from 'body-parser';
 import _ from 'lodash';
-import mongoose from 'mongoose';
 import fetch from 'isomorphic-fetch';
 
 const app = express();
@@ -11,7 +8,6 @@ app.use((req, res, next) => {
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   next();
 });
-app.use(bodyParser.json());
 
 // ---------------------------------------------------------------------------//
 // Lesson 3. Express.js & MongoDB.
@@ -27,7 +23,6 @@ fetch(pcUrl).then(async (res) => {
 
 app.get('/task3A/*', async (req, res) => {
   const url = req.originalUrl.charAt(req.originalUrl.length - 1) === '/' ? req.originalUrl.slice(8, req.originalUrl.length - 1) : req.originalUrl.slice(8);
-  console.log(url);
 
   if (url === '') {
     return res.json(pc);
@@ -47,7 +42,6 @@ app.get('/task3A/*', async (req, res) => {
   }
 
   const urlParts = url.split('/');
-  // console.log(urlParts);
   let result = _.get(pc, urlParts, 'Not Found');
   if (result === 'Not Found') {
     return res.status(404).send(result);
@@ -55,15 +49,13 @@ app.get('/task3A/*', async (req, res) => {
 
   if (urlParts.length > 1) {
     const checkObj = _.get(pc, urlParts.slice(0, urlParts.length - 1));
+    if (!(typeof checkObj === 'object')) {
+      result = 'Not Found';
+    }
     if (Array.isArray(checkObj)) {
       if (isNaN(urlParts[urlParts.length - 1])) {
         result = 'Not Found';
-        return res.status(404).send(result);
       }
-    }
-    if (!(typeof checkObj === 'object')) {
-      result = 'Not Found';
-      return res.status(404).send(result);
     }
   }
 

@@ -69,6 +69,10 @@
     "prepublish": "npm run build",
     "publish:docs": "easystatic deploy docs --repo kriasoft/babel-starter-kit",
     "dev": "nodemon --exec babel-node -- src/index.js",
+    "dev-les1": "nodemon --exec babel-node -- src/lesson1/index.js",
+    "dev-les2": "nodemon --exec babel-node -- src/lesson2/index.js",
+    "dev-les3": "nodemon --exec babel-node -- src/lesson3/index.js",
+    "dev-les3A": "nodemon --exec babel-node -- src/lesson3/task3A.js",
     "start": "easystatic start docs"
   }
 }
