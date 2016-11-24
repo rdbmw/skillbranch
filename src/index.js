@@ -1,78 +1,31 @@
 import express from 'express';
-import Promise from 'bluebird';
-import bodyParser from 'body-parser';
-import _ from 'lodash';
-import mongoose from 'mongoose';
-import fetch from 'isomorphic-fetch';
+import cors from 'cors';
+import expressJWT from 'express-jwt';
+import jwt from 'jsonwebtoken';
+
 
 const app = express();
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  next();
-});
-app.use(bodyParser.json());
+app.use(cors());
 
-// ---------------------------------------------------------------------------//
-// Lesson 3. Express.js & MongoDB.
-const pcUrl = 'https://gist.githubusercontent.com/isuvorov/ce6b8d87983611482aac89f6d7bc0037/raw/pc.json';
-
-let pc = {};
-fetch(pcUrl).then(async (res) => {
-  pc = await res.json();
-  console.log('Модель загружена');
-}).catch((err) => {
-  console.log('Чтото пошло не так:', err);
+app.get('/', (req, res) => {
+  res.json({
+    h: 'H',
+  });
 });
 
-app.get('/task3A/*', async (req, res) => {
-  const url = req.originalUrl.charAt(req.originalUrl.length - 1) === '/' ? req.originalUrl.slice(8, req.originalUrl.length - 1) : req.originalUrl.slice(8);
-  console.log(url);
+const secret = 'rdbmmdsldlsldl';
 
-  if (url === '') {
-    return res.json(pc);
-  }
-
-  if (url === 'volumes') {
-    const volumes = {};
-    const hdds = _.get(pc, 'hdd');
-    for (let i = 0; i < hdds.length; i += 1) {
-      if (!volumes[hdds[i].volume]) {
-        volumes[hdds[i].volume] = hdds[i].size;
-      } else {
-        volumes[hdds[i].volume] += hdds[i].size;
-      }
-    }
-    return res.json(_.mapValues(volumes, i => `${i}B`));
-  }
-
-  const urlParts = url.split('/');
-  // console.log(urlParts);
-  let result = _.get(pc, urlParts, 'Not Found');
-  if (result === 'Not Found') {
-    return res.status(404).send(result);
-  }
-
-  if (urlParts.length > 1) {
-    const checkObj = _.get(pc, urlParts.slice(0, urlParts.length - 1));
-    if (Array.isArray(checkObj)) {
-      if (isNaN(urlParts[urlParts.length - 1])) {
-        result = 'Not Found';
-        return res.status(404).send(result);
-      }
-    }
-    if (!(typeof checkObj === 'object')) {
-      result = 'Not Found';
-      return res.status(404).send(result);
-    }
-  }
-
-  if (result === 'Not Found') {
-    return res.status(404).send(result);
-  }
-  return res.json(result);
+app.get('/token', (req, res) => {
+  const data = {
+    user: 'rdbmw',
+    name: 'Mikhail',
+  };
+  res.json(jwt.sign(data, secret));
 });
 
+app.get('/protected', expressJWT({ secret }), (req, res) => {
+  res.json(req.user);
+});
 
 // ---------------------------------------------------------------------------//
 app.listen(3000, () => {
