@@ -49,6 +49,52 @@ app.get('/task3B/users', (req, res) => {
 
 });
 
+app.get('/task3B/users/populate', (req, res) => {
+  const havePet = req.query.havePet || '';
+    let users = _.get(model, 'users').map(item => (
+    {
+      ...item,
+      pets: _.get(model, 'pets').filter(pet => pet.userId === item.id),
+    }
+  ));
+  if (!(havePet === '')) {
+    const catsType = _.get(model, 'pets').filter(item => item.type === havePet);
+    // console.log('cats', cats);
+    users = users.filter((item) => {
+      const haveCatsDogs = catsType.filter(cat => cat.userId === item.id);
+      // console.log(item.id, '', haveCats);
+      if (haveCatsDogs.length > 0) {
+        return true;
+      } else {
+        return false;
+      }
+    });
+  }
+  return res.json(users);
+});
+
+app.get('/task3B/users/:param/populate', (req, res) => {
+  const userParam = req.params.param || null;
+  const users = _.get(model, 'users').map(item => (
+  {
+    ...item,
+    pets: _.get(model, 'pets').filter(pet => pet.userId === item.id),
+  }
+));
+let user;
+  if (isNaN(userParam)) {
+    user = users.filter(item => item.username === userParam);
+    console.log(user);
+  } else {
+    user = users.filter(item => item.id === +userParam);
+  }
+  if (user.length === 0) {
+    return res.status(404).send('Not Found');
+  } else {
+    return res.json(user[0]);
+  }
+});
+
 app.get('/task3B/users/:param', (req, res) => {
   const userParam = req.params.param || null;
   let user;
@@ -103,6 +149,60 @@ app.get('/task3B/pets', (req, res) => {
   return res.json(pets);
 });
 
+app.get('/task3B/pets/populate', (req, res) => {
+  // ?type=cat&age_gt=12
+  const type = req.query.type || '';
+  const ageGt = req.query.age_gt || '';
+  const ageLt = req.query.age_lt || '';
+  let pets = _.get(model, 'pets').map(item => (
+    {
+      ...item,
+      user: _.get(model, 'users').filter(user => user.id === item.userId)[0],
+    }
+  ));
+  if (!(type === '')) {
+    // console.log('type');
+    pets = pets.filter(item => item.type === type);
+  }
+  if (!(ageGt === '')) {
+    // console.log('ageGt');
+    pets = pets.filter(item => item.age > +ageGt);
+  }
+  if (!(ageLt === '')) {
+    // console.log('ageДt');
+    pets = pets.filter(item => item.age < +ageLt);
+  }
+  return res.json(pets);
+});
+
+app.get('/task3B/pets/:id/populate', (req, res) => {
+  // ?type=cat&age_gt=12
+  const petsId = req.params.id || '';
+  const type = req.query.type || '';
+  const ageGt = req.query.age_gt || '';
+  const ageLt = req.query.age_lt || '';
+  // console.log('id', petsId);
+  let pets = _.get(model, 'pets').filter(el => el.id === +petsId).map(item => (
+    {
+      ...item,
+      user: _.get(model, 'users').filter(user => user.id === item.userId)[0],
+    }
+  ));
+  if (!(type === '')) {
+    // console.log('type');
+    pets = pets.filter(item => item.type === type);
+  }
+  if (!(ageGt === '')) {
+    // console.log('ageGt');
+    pets = pets.filter(item => item.age > +ageGt);
+  }
+  if (!(ageLt === '')) {
+    // console.log('ageДt');
+    pets = pets.filter(item => item.age < +ageLt);
+  }
+  return res.json(pets[0]);
+});
+
 app.get('/task3B/pets/:param', (req, res) => {
   const param = req.params.param || null;
   let pet;
@@ -117,6 +217,7 @@ app.get('/task3B/pets/:param', (req, res) => {
     return res.json(...pet);
   }
 });
+
 
 // ---------------------------------------------------------------------------//
 app.listen(3000, () => {
