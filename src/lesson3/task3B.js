@@ -40,18 +40,12 @@ app.get('/task3B/users', (req, res) => {
       }
     });
   }
-    // console.log(userWithCatsDogs);
-    // if (userWithCatsDogs.length === 0) {
-      // return res.status(404).send('Not Found');
-    // } else {
   return res.json(users);
-    // }
-
 });
 
 app.get('/task3B/users/populate', (req, res) => {
   const havePet = req.query.havePet || '';
-    let users = _.get(model, 'users').map(item => (
+  let users = _.get(model, 'users').map(item => (
     {
       ...item,
       pets: _.get(model, 'pets').filter(pet => pet.userId === item.id),
@@ -76,12 +70,12 @@ app.get('/task3B/users/populate', (req, res) => {
 app.get('/task3B/users/:param/populate', (req, res) => {
   const userParam = req.params.param || null;
   const users = _.get(model, 'users').map(item => (
-  {
-    ...item,
-    pets: _.get(model, 'pets').filter(pet => pet.userId === item.id),
-  }
-));
-let user;
+    {
+      ...item,
+      pets: _.get(model, 'pets').filter(pet => pet.userId === item.id),
+    }
+  ));
+  let user;
   if (isNaN(userParam)) {
     user = users.filter(item => item.username === userParam);
     console.log(user);
@@ -127,7 +121,6 @@ app.get('/task3B/users/:param/pets', (req, res) => {
   }
 });
 
-//
 app.get('/task3B/pets', (req, res) => {
   const type = req.query.type || '';
   const ageGt = req.query.age_gt || '';
@@ -207,7 +200,7 @@ app.get('/task3B/pets/:param', (req, res) => {
   const param = req.params.param || null;
   let pet;
   if (isNaN(param)) {
-    return res.json("err");
+    return res.json('err');
   } else {
     pet = _.get(model, 'pets').filter(item => item.id === +param);
   }

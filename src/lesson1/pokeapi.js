@@ -1,9 +1,9 @@
 import fetch from 'isomorphic-fetch';
 
-const __DEV__ = true;
+const __DEV__ = false;
 
 async function getPokemons(url, i = 0) {
-  // console.log('getPokemons ', url, i);
+   console.log('getPokemons ', url, i);
   const response = await fetch(url);
   const page = await response.json();
   const pokemons = page.results;
@@ -20,7 +20,7 @@ async function getPokemons(url, i = 0) {
 }
 
 async function getPokemon(url) {
-  // console.log('getPokemon ', url);
+  console.log('getPokemon ', url);
   const response = await fetch(url);
   const pokemon = await response.json();
   return pokemon;
